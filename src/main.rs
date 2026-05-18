@@ -1,3 +1,8 @@
+mod block;
+mod blockchain;
+
+use crate::blockchain::Blockchain;
+
 fn main() {
-    println!("Hello, world!");
+    let blockchain = Blockchain::new()
 }
