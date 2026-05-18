@@ -1,6 +1,8 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 pub struct Block {
     index: i32,
-    timestamp: i32,
+    timestamp: u64,
     data: String,
     previous_hash: String,
     hash: String,
@@ -8,7 +10,8 @@ pub struct Block {
 }
 
 impl Block {
-    fn new(index: i32, timestamp: i32, data: String, previous_hash: String, nonce: i32) -> Self {
+    pub fn new(index: i32, data: String, previous_hash: String, nonce: i32) -> Self {
+        let timestamp = Self::current_timestamp();
         let hash = Self::calculate_hash(index, timestamp, &data, &previous_hash, nonce);
 
         Self {
@@ -21,9 +24,16 @@ impl Block {
         }
     }
 
+    fn current_timestamp() -> u64 {
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+    }
+
     fn calculate_hash(
         index: i32,
-        timestamp: i32,
+        timestamp: u64,
         data: &str,
         previous_hash: &str,
         nonce: i32,
@@ -40,4 +50,3 @@ impl Block {
         hash_string
     }
 }
-
