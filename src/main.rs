@@ -1,8 +1,9 @@
 mod block;
 mod blockchain;
+mod transaction;
 
 use crate::blockchain::Blockchain;
 
 fn main() {
-    let blockchain = Blockchain::new()
+    let _blockchain = Blockchain::new();
 }

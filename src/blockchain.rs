@@ -1,7 +1,8 @@
 use crate::block::Block;
 
+#[allow(dead_code)]
 pub struct Blockchain {
-    chain: Vec<Block>,
+    pub chain: Vec<Block>,
 }
 
 impl Blockchain {
@@ -10,7 +11,6 @@ impl Blockchain {
             0,
             "I will do what I must.".to_string(),
             "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
-            0,
         );
 
         let mut chain: Vec<Block> = Vec::new();
@@ -19,5 +19,5 @@ impl Blockchain {
         Self { chain }
     }
 
-    fn add_block() {}
+    fn _add_block() {}
 }
