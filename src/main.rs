@@ -15,4 +15,6 @@ fn main() {
     blockchain.mempool.push(transaction1);
     blockchain.mempool.push(transaction2);
     blockchain.mempool.push(transaction3);
+
+    blockchain.add_block();
 }
