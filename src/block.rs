@@ -66,7 +66,7 @@ impl Block {
             let hash = hasher.finalize();
             let current_hash = hex::encode(hash);
 
-            if current_hash.starts_with("00") {
+            if current_hash.starts_with("0000") {
                 break current_hash;
             }
             nonce += 1;
