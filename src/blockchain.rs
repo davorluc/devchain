@@ -1,7 +1,6 @@
 use crate::block::Block;
 use crate::transaction::Transaction;
 
-#[allow(dead_code)]
 pub struct Blockchain {
     pub chain: Vec<Block>,
     pub mempool: Vec<Transaction>,
