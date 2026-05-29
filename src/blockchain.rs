@@ -17,7 +17,6 @@ impl Blockchain {
         let genesis_block = Block::new(
             0,
             genesis_transactions,
-            // "I will do what I must.".to_string(),
             "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
         );
 

@@ -45,10 +45,7 @@ impl Block {
         mut nonce: i32,
     ) -> (String, i32) {
         use hex;
-        // use serde_json::to_string;
         use sha2::{Digest, Sha256};
-
-        // let input = format!("{}{}{}{}{}", index, timestamp, data, previous_hash, nonce);
 
         let tx_json = serde_json::to_string(&data).unwrap();
 
