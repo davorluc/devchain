@@ -17,8 +17,15 @@ impl Block {
         let nonce: i32 = 0;
         let (hash, nonce) =
             Self::calculate_hash(index, timestamp, data.clone(), &previous_hash, nonce);
-        println!("{}", nonce);
-        println!("{}", hash);
+        println!("======== Block {} ========", index);
+        println!("");
+        println!("nonce: {}", nonce);
+        println!("hash: {}", hash);
+        println!("previous hash: {}", previous_hash);
+        println!("index: {}", index);
+        println!("timestamp: {}", timestamp);
+        println!("");
+        println!("==========================");
 
         Self {
             index,
