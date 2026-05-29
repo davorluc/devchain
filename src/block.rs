@@ -1,20 +1,22 @@
+use crate::transaction::Transaction;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[allow(dead_code)]
 pub struct Block {
-    index: i32,
+    pub index: i32,
     timestamp: u64,
-    data: String,
+    data: Vec<Transaction>,
     previous_hash: String,
-    hash: String,
+    pub hash: String,
     nonce: i32,
 }
 
 impl Block {
-    pub fn new(index: i32, data: String, previous_hash: String /*nonce: i32*/) -> Self {
+    pub fn new(index: i32, data: Vec<Transaction>, previous_hash: String) -> Self {
         let timestamp = Self::current_timestamp();
         let nonce: i32 = 0;
-        let (hash, nonce) = Self::calculate_hash(index, timestamp, &data, &previous_hash, nonce);
+        let (hash, nonce) =
+            Self::calculate_hash(index, timestamp, data.clone(), &previous_hash, nonce);
         println!("{}", nonce);
         println!("{}", hash);
 
@@ -38,17 +40,23 @@ impl Block {
     fn calculate_hash(
         index: i32,
         timestamp: u64,
-        data: &str,
+        data: Vec<Transaction>,
         previous_hash: &str,
         mut nonce: i32,
     ) -> (String, i32) {
         use hex;
+        // use serde_json::to_string;
         use sha2::{Digest, Sha256};
 
         // let input = format!("{}{}{}{}{}", index, timestamp, data, previous_hash, nonce);
 
+        let tx_json = serde_json::to_string(&data).unwrap();
+
         let hash_string: String = loop {
-            let input = format!("{}{}{}{}{}", index, timestamp, data, previous_hash, nonce);
+            let input = format!(
+                "{}{}{}{}{}",
+                index, timestamp, tx_json, previous_hash, nonce
+            );
             let mut hasher = Sha256::new();
             hasher.update(input);
             let hash = hasher.finalize();
