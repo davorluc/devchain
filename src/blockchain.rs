@@ -26,10 +26,14 @@ impl Blockchain {
         }
     }
 
-    fn _add_block(&mut self, mempool: Vec<Transaction>) -> () {
+    pub fn add_block(&mut self) -> () {
         let prev_block = self.chain.last().unwrap();
 
-        let new_block: Block = Block::new(prev_block.index + 1, mempool, prev_block.hash.clone());
+        let new_block: Block = Block::new(
+            prev_block.index + 1,
+            self.mempool.clone(),
+            prev_block.hash.clone(),
+        );
         self.chain.push(new_block);
         self.mempool.clear();
     }
