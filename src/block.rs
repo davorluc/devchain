@@ -6,7 +6,7 @@ pub struct Block {
     pub index: i32,
     timestamp: u64,
     data: Vec<Transaction>,
-    previous_hash: String,
+    pub previous_hash: String,
     pub hash: String,
     nonce: i32,
 }

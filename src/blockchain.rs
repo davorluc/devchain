@@ -36,4 +36,34 @@ impl Blockchain {
         self.chain.push(new_block);
         self.mempool.clear();
     }
+
+    fn _is_chain_valid(&self) -> bool {
+        let mut result = true;
+        for (i, block) in self.chain.iter().enumerate() {
+            if block.index == 0 {
+                let genesis_transactions = vec![Transaction::new(
+                    "Alice".to_string(),
+                    "Bob".to_string(),
+                    100,
+                )];
+                let genesis_block = Block::new(
+                    0,
+                    genesis_transactions,
+                    "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
+                );
+                if block.hash != genesis_block.hash {
+                    result = false;
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                if block.previous_hash != self.chain[i - 1].hash {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        result
+    }
 }
