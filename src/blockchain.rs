@@ -47,6 +47,8 @@ impl Blockchain {
         println!("{}", display);
     }
 
+    // TODO: Test this function, as it *might* always return false, as timestamp is dynamically
+    // set, thus block.hash != genesis_block.hash, as current time is included in hashing
     fn _is_chain_valid(&self) -> bool {
         let mut result = true;
         for (i, block) in self.chain.iter().enumerate() {
