@@ -1,5 +1,6 @@
 use crate::block::Block;
 use crate::transaction::Transaction;
+use std::path::Path;
 
 pub struct Blockchain {
     pub chain: Vec<Block>,
@@ -18,6 +19,7 @@ impl Blockchain {
             genesis_transactions,
             "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
         );
+        Self::_store_block(&genesis_block);
 
         Self {
             chain: vec![genesis_block],
@@ -33,8 +35,16 @@ impl Blockchain {
             self.mempool.clone(),
             prev_block.hash.clone(),
         );
+        Self::_store_block(&new_block);
         self.chain.push(new_block);
         self.mempool.clear();
+    }
+
+    fn _store_block(block: &Block) {
+        let path_string: String = block.index.to_string() + ".block";
+        let path = Path::new(&path_string);
+        let display = path.display();
+        println!("{}", display);
     }
 
     fn _is_chain_valid(&self) -> bool {
