@@ -1,5 +1,7 @@
 use crate::block::Block;
 use crate::transaction::Transaction;
+use std::fs::File;
+use std::io::prelude::*;
 use std::path::Path;
 
 pub struct Blockchain {
@@ -41,10 +43,31 @@ impl Blockchain {
     }
 
     fn _store_block(block: &Block) {
-        let path_string: String = block.index.to_string() + ".block";
+        let path_string: String = "./data/".to_owned() + &block.index.to_string() + ".block";
         let path = Path::new(&path_string);
         let display = path.display();
         println!("{}", display);
+
+        let block_data = format!(
+            "{};{};{:?};{};{};{}",
+            block.index,
+            block.timestamp,
+            serde_json::to_string(&block.data),
+            block.hash,
+            block.previous_hash,
+            block.nonce,
+        );
+        println!("{}", block_data);
+
+        let mut file = match File::create(&path) {
+            Err(why) => panic!("couldn't create {}: {}", display, why),
+            Ok(file) => file,
+        };
+
+        match file.write_all(block_data.as_bytes()) {
+            Err(why) => panic!("couldn't write to {}: {}", display, why),
+            Ok(_) => println!("successfully wrote to {}", display),
+        }
     }
 
     // TODO: Test this function, as it *might* always return false, as timestamp is dynamically

@@ -4,11 +4,11 @@ use std::time::{SystemTime, UNIX_EPOCH};
 #[allow(dead_code)]
 pub struct Block {
     pub index: i32,
-    timestamp: u64,
-    data: Vec<Transaction>,
+    pub timestamp: u64,
+    pub data: Vec<Transaction>,
     pub previous_hash: String,
     pub hash: String,
-    nonce: i32,
+    pub nonce: i32,
 }
 
 impl Block {
