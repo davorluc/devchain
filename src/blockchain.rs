@@ -34,12 +34,12 @@ impl Blockchain {
 
         let new_block: Block = Block::new(
             prev_block.index + 1,
-            self.mempool.clone(),
+            self.mempool.clone(), // TODO: limit TXs inlcuded
             prev_block.hash.clone(),
         );
         Self::_store_block(&new_block);
         self.chain.push(new_block);
-        self.mempool.clear();
+        self.mempool.clear(); // TODO: only remove included TXs
     }
 
     fn _store_block(block: &Block) {

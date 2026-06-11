@@ -5,6 +5,7 @@ pub struct Transaction {
     sender: String,
     receiver: String,
     amount: i64,
+    // TODO: add TTL to transaction
 }
 
 impl Transaction {
