@@ -21,7 +21,7 @@ impl Blockchain {
             genesis_transactions,
             "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
         );
-        Self::_store_block(&genesis_block);
+        Self::store_block(&genesis_block);
 
         Self {
             chain: vec![genesis_block],
@@ -36,7 +36,7 @@ impl Blockchain {
 
         if txs.len() < 10 {
             let new_block: Block = Block::new(prev_block.index + 1, txs, prev_block.hash.clone());
-            Self::_store_block(&new_block);
+            Self::store_block(&new_block);
             self.chain.push(new_block);
             self.mempool.clear();
         } else {
@@ -45,13 +45,13 @@ impl Blockchain {
                 txs[..=9].to_vec(),
                 prev_block.hash.clone(),
             );
-            Self::_store_block(&new_block);
+            Self::store_block(&new_block);
             self.chain.push(new_block);
             self.mempool.drain(..=9);
         }
     }
 
-    fn _store_block(block: &Block) {
+    fn store_block(block: &Block) {
         let path_string: String = "./data/".to_owned() + &block.index.to_string() + ".block";
         let path = Path::new(&path_string);
         let display = path.display();
