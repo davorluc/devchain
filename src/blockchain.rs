@@ -32,14 +32,23 @@ impl Blockchain {
     pub fn add_block(&mut self) -> () {
         let prev_block = self.chain.last().unwrap();
 
-        let new_block: Block = Block::new(
-            prev_block.index + 1,
-            self.mempool.clone(), // TODO: limit TXs inlcuded
-            prev_block.hash.clone(),
-        );
-        Self::_store_block(&new_block);
-        self.chain.push(new_block);
-        self.mempool.clear(); // TODO: only remove included TXs
+        let txs: Vec<Transaction> = self.mempool.clone();
+
+        if txs.len() < 10 {
+            let new_block: Block = Block::new(prev_block.index + 1, txs, prev_block.hash.clone());
+            Self::_store_block(&new_block);
+            self.chain.push(new_block);
+            self.mempool.clear();
+        } else {
+            let new_block: Block = Block::new(
+                prev_block.index + 1,
+                txs[..=9].to_vec(),
+                prev_block.hash.clone(),
+            );
+            Self::_store_block(&new_block);
+            self.chain.push(new_block);
+            self.mempool.drain(..=9);
+        }
     }
 
     fn _store_block(block: &Block) {
