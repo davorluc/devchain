@@ -34,6 +34,7 @@ impl Blockchain {
 
         let txs: Vec<Transaction> = self.mempool.clone();
 
+        // TODO: check TTL for each transaction once implemented
         if txs.len() < 10 {
             let new_block: Block = Block::new(prev_block.index + 1, txs, prev_block.hash.clone());
             Self::store_block(&new_block);
@@ -68,6 +69,7 @@ impl Blockchain {
         );
         println!("{}", block_data);
 
+        // TODO: off-load file saving functionality into sep. function
         let mut file = match File::create(&path) {
             Err(why) => panic!("couldn't create {}: {}", display, why),
             Ok(file) => file,
