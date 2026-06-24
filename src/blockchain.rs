@@ -31,26 +31,15 @@ impl Blockchain {
     }
 
     pub fn add_block(&mut self) -> () {
+        self.clean_mempool();
+
         let prev_block = self.chain.last().unwrap();
+        let txs: Vec<Transaction> = self.mempool.drain(..self.mempool.len().min(10)).collect();
 
-        let txs: Vec<Transaction> = Self::clean_mempool(self, self.mempool.clone());
+        let new_block: Block = Block::new(prev_block.index + 1, txs, prev_block.hash.clone());
 
-        // TODO: check TTL for each transaction once implemented
-        if txs.len() < 10 {
-            let new_block: Block = Block::new(prev_block.index + 1, txs, prev_block.hash.clone());
-            Self::store_block(&new_block);
-            self.chain.push(new_block);
-            self.mempool.clear();
-        } else {
-            let new_block: Block = Block::new(
-                prev_block.index + 1,
-                txs[..=9].to_vec(),
-                prev_block.hash.clone(),
-            );
-            Self::store_block(&new_block);
-            self.chain.push(new_block);
-            self.mempool.drain(..=9);
-        }
+        Self::store_block(&new_block);
+        self.chain.push(new_block);
     }
 
     fn store_block(block: &Block) {
@@ -92,7 +81,7 @@ impl Blockchain {
                     "Alice".to_string(),
                     "Bob".to_string(),
                     100,
-                    block.index,
+                    block.index.try_into().unwrap(),
                 )];
                 let genesis_block = Block::new(
                     0,
@@ -118,16 +107,8 @@ impl Blockchain {
     // TODO: test this function if it works properly
     // IDEA: when implementing tips, for testing purposes only take tips > 5
     // and populate mempool with TXs with tips < 5 to see if function works properly
-    fn clean_mempool(&self, mut mempool: Vec<Transaction>) -> Vec<Transaction> {
-        let result: Vec<Transaction> = mempool
-            .drain(..)
-            .filter(|tx| {
-                usize::try_from(tx.birth + 5)
-                    .map(|v| v == self.chain.len())
-                    .unwrap_or(false)
-            })
-            .collect();
-        result
+    fn clean_mempool(&mut self) {
+        self.mempool.retain(|tx| tx.birth + 5 > self.chain.len());
     }
 
     // TODO: fn sort_mempool(&self, mut mempool: Vec<Transaction>) -> Vec<Transaction>
