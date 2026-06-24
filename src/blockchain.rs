@@ -34,7 +34,9 @@ impl Blockchain {
         self.clean_mempool();
 
         let prev_block = self.chain.last().unwrap();
-        let txs: Vec<Transaction> = self.mempool.drain(..self.mempool.len().min(10)).collect();
+
+        let tx_count: usize = self.mempool.len().min(10);
+        let txs: Vec<Transaction> = self.mempool.drain(..tx_count).collect();
 
         let new_block: Block = Block::new(prev_block.index + 1, txs, prev_block.hash.clone());
 
