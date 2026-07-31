@@ -13,18 +13,21 @@ fn main() {
         "Din Djarin".to_string(),
         1000,
         (blockchain.chain.len() - 1).try_into().unwrap(),
+        1.0,
     );
     let transaction2 = Transaction::new(
         "Din Djarin".to_string(),
         "Din Grogu".to_string(),
         10,
         (blockchain.chain.len() - 1).try_into().unwrap(),
+        1.0,
     );
     let transaction3 = Transaction::new(
         "Din Grogu".to_string(),
         "Hot Dog Man".to_string(),
         10,
         (blockchain.chain.len() - 1).try_into().unwrap(),
+        1.0,
     );
 
     blockchain.mempool.push(transaction1);

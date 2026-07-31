@@ -16,6 +16,7 @@ impl Blockchain {
             "Bob".to_string(),
             100,
             0,
+            0.0,
         )];
         let genesis_block = Block::new(
             0,
@@ -84,6 +85,7 @@ impl Blockchain {
                     "Bob".to_string(),
                     100,
                     block.index.try_into().unwrap(),
+                    0.0,
                 )];
                 let genesis_block = Block::new(
                     0,
