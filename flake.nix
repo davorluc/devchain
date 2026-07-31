@@ -10,11 +10,12 @@
     pkgs = nixpkgs.legacyPackages.${system};
   in {
     devShells.${system}.default = pkgs.mkShell {
-      name = "flashloan-dev";
+      name = "devchain-dev";
       buildInputs = with pkgs; [
         cargo
-        rustup
         rust-analyzer
+        rustc
+        pi-coding-agent
       ];
 
       shellHook = ''
