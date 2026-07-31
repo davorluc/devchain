@@ -4,9 +4,9 @@ use serde::Serialize;
 pub struct Transaction {
     sender: String,
     receiver: String,
-    amount: i64, // TODO: turn into floating point value
+    amount: i64, // TODO: use fixed-point or atomic units if fractional amounts are needed
     pub birth: usize,
-    // TODO: add tip
+    // TODO: add an optional tip/fee field for mempool prioritization
 }
 
 impl Transaction {

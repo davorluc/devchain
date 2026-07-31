@@ -1,3 +1,3 @@
 struct Simulator {
-    // TODO: define the simulator
+    // TODO: model nodes, block production, and transaction propagation here
 }

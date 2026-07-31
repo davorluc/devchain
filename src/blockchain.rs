@@ -61,7 +61,7 @@ impl Blockchain {
         );
         println!("{}", block_data);
 
-        // TODO: off-load file saving functionality into sep. function
+        // TODO: extract block persistence into a dedicated function or module
         let mut file = match File::create(&path) {
             Err(why) => panic!("couldn't create {}: {}", display, why),
             Ok(file) => file,
@@ -73,8 +73,8 @@ impl Blockchain {
         }
     }
 
-    // TODO: Test this function, as it *might* always return false, as timestamp is dynamically
-    // set, thus block.hash != genesis_block.hash, as current time is included in hashing
+    // TODO: make genesis validation deterministic; recreating the genesis block here uses a new
+    // timestamp, so its hash will never match the stored one
     fn _is_chain_valid(&self) -> bool {
         let mut result = true;
         for (i, block) in self.chain.iter().enumerate() {
@@ -106,12 +106,11 @@ impl Blockchain {
         result
     }
 
-    // TODO: test this function if it works properly
-    // IDEA: when implementing tips, for testing purposes only take tips > 5
-    // and populate mempool with TXs with tips < 5 to see if function works properly
+    // TODO: add tests for mempool pruning once the expiration policy is finalized
+    // IDEA: when implementing tips, test the prioritization by mixing high- and low-tip TXs
     fn clean_mempool(&mut self) {
         self.mempool.retain(|tx| tx.birth + 5 > self.chain.len());
     }
 
-    // TODO: fn sort_mempool(&self, mut mempool: Vec<Transaction>) -> Vec<Transaction>
+    // TODO: sort the mempool by fee/tip once transactions carry prioritization data
 }
