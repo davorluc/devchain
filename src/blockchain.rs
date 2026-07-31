@@ -32,8 +32,7 @@ impl Blockchain {
     }
 
     pub fn add_block(&mut self) -> () {
-        self.clean_mempool();
-
+        self.sort_mempool();
         let prev_block = self.chain.last().unwrap();
 
         let tx_count: usize = self.mempool.len().min(10);
@@ -43,6 +42,7 @@ impl Blockchain {
 
         Self::store_block(&new_block);
         self.chain.push(new_block);
+        self.clean_mempool();
     }
 
     fn store_block(block: &Block) {
@@ -115,4 +115,7 @@ impl Blockchain {
     }
 
     // TODO: sort the mempool by fee/tip once transactions carry prioritization data
+    fn sort_mempool(&mut self) {
+        self.mempool.sort_by(|a, b| b.tip.total_cmp(&a.tip))
+    }
 }

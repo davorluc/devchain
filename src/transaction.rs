@@ -6,7 +6,7 @@ pub struct Transaction {
     receiver: String,
     amount: i64, // TODO: use fixed-point or atomic units if fractional amounts are needed
     pub birth: usize,
-    tip: f32,// TODO: add an optional tip/fee field for mempool prioritization
+    pub tip: f32,// TODO: add an optional tip/fee field for mempool prioritization
 }
 
 impl Transaction {
