@@ -23,7 +23,15 @@ impl _Wallet {
     }
 
 
-    /*pub fn address(&self) -> &Address;
-    pub fn public_key(&self) -> &_PrivateKey;
-    pub fn sign(&self, message: &[u8]) -> _PrivateKey;*/
+    pub fn _get_public_key(&self) -> &PublicKey {
+        &self.public_key
+    }
+
+    pub fn _get_address(&self) -> &sha256::Hash {
+        &self.address
+    }
+
+    // TODO: implement transaction signature
+    // INFO: transaction functinality probably has to be adjusted
+    /*pub fn sign(&self, message: &[u8]) -> _PrivateKey;*/
 }
