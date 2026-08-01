@@ -15,6 +15,7 @@
         cargo
         rust-analyzer
         rustc
+        rustup
         pi-coding-agent
       ];
 
