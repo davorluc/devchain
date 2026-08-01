@@ -1,6 +1,7 @@
 mod block;
 mod blockchain;
 mod transaction;
+mod wallet;
 
 use crate::blockchain::Blockchain;
 use crate::transaction::Transaction;
