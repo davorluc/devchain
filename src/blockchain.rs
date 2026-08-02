@@ -7,6 +7,7 @@ use std::path::Path;
 pub struct Blockchain {
     pub chain: Vec<Block>,
     pub mempool: Vec<Transaction>,
+    pub utxo_set: Vec<Transaction>,
 }
 
 impl Blockchain {

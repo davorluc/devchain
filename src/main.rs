@@ -4,11 +4,17 @@ mod transaction;
 mod wallet;
 
 use crate::blockchain::Blockchain;
-use crate::transaction::Transaction;
+// use crate::transaction::Transaction;
+use crate::wallet::Wallet;
 
 fn main() {
     let mut blockchain = Blockchain::new();
 
+    let _moff_gideon = Wallet::new();
+    let _din_djarin = Wallet::new();
+    let _din_grogu = Wallet::new();
+    let _hotdog_man = Wallet::new();
+/*
     let transaction1 = Transaction::new(
         "Moff Gideon".to_string(),
         "Din Djarin".to_string(),
@@ -35,5 +41,5 @@ fn main() {
     blockchain.mempool.push(transaction2);
     blockchain.mempool.push(transaction3);
 
-    blockchain.add_block();
+    blockchain.add_block();*/
 }
