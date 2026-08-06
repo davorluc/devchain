@@ -1,37 +1,44 @@
-use secp256k1::rand;
-use secp256k1::{Secp256k1, SecretKey, PublicKey};
+use secp256k1::ecdsa::Signature;
 use secp256k1::hashes::{sha256, Hash};
-
+use secp256k1::rand;
+use secp256k1::{Message, Secp256k1, SecretKey, PublicKey};
 
 pub struct Wallet {
-    _secret_key: SecretKey,
-    _public_key: PublicKey,
-    _address: sha256::Hash,
+    secret_key: SecretKey,
+    public_key: PublicKey,
+    address: String,
 }
 
 impl Wallet {
     pub fn new() -> Self {
         let secp = Secp256k1::new();
-        let (_secret_key, _public_key) = secp.generate_keypair(&mut rand::rng());
-        let _address = sha256::Hash::hash(_public_key.to_string().as_bytes());
+        let (secret_key, public_key) = secp.generate_keypair(&mut rand::rng());
+        let address = sha256::Hash::hash(public_key.to_string().as_bytes()).to_string();
 
         Self {
-            _secret_key,
-            _public_key,
-            _address,
+            secret_key,
+            public_key,
+            address,
         }
     }
 
-
-    pub fn _get_public_key(&self) -> &PublicKey {
-        &self._public_key
+    pub fn get_public_key(&self) -> &PublicKey {
+        &self.public_key
     }
 
-    pub fn _get_address(&self) -> &sha256::Hash {
-        &self._address
+    pub fn get_public_key_string(&self) -> String {
+        self.public_key.to_string()
     }
 
-    // TODO: implement transaction signature
-    // INFO: transaction functinality probably has to be adjusted
-    /*pub fn sign(&self, message: &[u8]) -> _PrivateKey;*/
+    pub fn get_address(&self) -> &str {
+        &self.address
+    }
+
+    pub fn sign(&self, message: &[u8]) -> String {
+        let secp = Secp256k1::new();
+        let digest = sha256::Hash::hash(message);
+        let msg = Message::from_digest(digest.to_byte_array());
+        let sig: Signature = secp.sign_ecdsa(msg, &self.secret_key);
+        hex::encode(sig.serialize_compact())
+    }
 }

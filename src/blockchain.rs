@@ -1,5 +1,7 @@
 use crate::block::Block;
-use crate::transaction::Transaction;
+use crate::transaction::{Transaction, TxOut};
+use crate::wallet::Wallet;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -12,16 +14,13 @@ pub struct Blockchain {
 
 impl Blockchain {
     pub fn new() -> Self {
-        let genesis_transactions = vec![Transaction::new(
-            "Alice".to_string(),
-            "Bob".to_string(),
-            100,
-            0,
-            0.0,
-        )];
+        let genesis_wallet = Wallet::new();
+        let genesis_output = TxOut::new(100, genesis_wallet.get_address().to_string());
+        let genesis_transaction = vec![Transaction::coinbase(vec![genesis_output]).unwrap()];
+
         let genesis_block = Block::new(
             0,
-            genesis_transactions,
+            genesis_transaction,
             "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
         );
         Self::store_block(&genesis_block);
@@ -29,10 +28,11 @@ impl Blockchain {
         Self {
             chain: vec![genesis_block],
             mempool: Vec::new(),
+            utxo_set: Vec::new(),
         }
     }
 
-    pub fn add_block(&mut self) -> () {
+    pub fn add_block(&mut self) {
         self.sort_mempool();
         let prev_block = self.chain.last().unwrap();
 
@@ -63,7 +63,6 @@ impl Blockchain {
         );
         println!("{}", block_data);
 
-        // TODO: extract block persistence into a dedicated function or module
         let mut file = match File::create(&path) {
             Err(why) => panic!("couldn't create {}: {}", display, why),
             Ok(file) => file,
@@ -75,48 +74,20 @@ impl Blockchain {
         }
     }
 
-    // TODO: make genesis validation deterministic; recreating the genesis block here uses a new
-    // timestamp, so its hash will never match the stored one
     fn _is_chain_valid(&self) -> bool {
-        let mut result = true;
-        for (i, block) in self.chain.iter().enumerate() {
-            if block.index == 0 {
-                let genesis_transactions = vec![Transaction::new(
-                    "Alice".to_string(),
-                    "Bob".to_string(),
-                    100,
-                    block.index.try_into().unwrap(),
-                    0.0,
-                )];
-                let genesis_block = Block::new(
-                    0,
-                    genesis_transactions,
-                    "0000000000000000000000000000000000000000000000000000000000000000".to_string(),
-                );
-                if block.hash != genesis_block.hash {
-                    result = false;
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
-                if block.previous_hash != self.chain[i - 1].hash {
-                    result = false;
-                    break;
-                }
+        for (i, block) in self.chain.iter().enumerate().skip(1) {
+            if block.previous_hash != self.chain[i - 1].hash {
+                return false;
             }
         }
-        result
+        true
     }
 
-    // TODO: add tests for mempool pruning once the expiration policy is finalized
-    // IDEA: when implementing tips, test the prioritization by mixing high- and low-tip TXs
-    fn clean_mempool(&mut self) {
-        self.mempool.retain(|tx| tx.birth + 5 > self.chain.len());
-    }
+    // TODO: this may become redundant if we only drain valid txs into blocks.
+    // Keep it around if we later add tx expiration, invalidation, or orphan handling.
+    fn clean_mempool(&mut self) {}
 
-    // TODO: sort the mempool by fee/tip once transactions carry prioritization data
-    fn sort_mempool(&mut self) {
-        self.mempool.sort_by(|a, b| b.tip.total_cmp(&a.tip))
-    }
+    // TODO: re-implement once Transaction carries tip/fee metadata again.
+    // Then sort by fee priority before draining into a block.
+    fn sort_mempool(&mut self) {}
 }
